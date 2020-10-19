@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "d42078e4dde33d3129b1701adb02560e079c250c70d85a51b2fd5fb9ee311e96"
+            "sha256": "7037a2541507476a37e58b0ff073d4be29fd9cbe51882c52569143862809d0ee"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -628,6 +628,13 @@
             "index": "pypi",
             "version": "==7.2.0"
         },
+        "pipfile": {
+            "hashes": [
+                "sha256:f7d9f15de8b660986557eb3cc5391aa1a16207ac41bc378d03f414762d36c984"
+            ],
+            "index": "pypi",
+            "version": "==0.0.2"
+        },
         "plotly": {
             "hashes": [
                 "sha256:584b3dc685c84b652198166969742115b31892de61c86556f909f3f0f9ccd0d3",
@@ -915,6 +922,13 @@
             ],
             "index": "pypi",
             "version": "==2.1.0"
+        },
+        "toml": {
+            "hashes": [
+                "sha256:926b612be1e5ce0634a2ca03470f95169cf16f939018233a670519cb4ac58b0f",
+                "sha256:bda89d5935c2eac546d648028b9901107a595863cb36bae0c73ac804a9b4ce88"
+            ],
+            "version": "==0.10.1"
         },
         "tornado": {
             "hashes": [
