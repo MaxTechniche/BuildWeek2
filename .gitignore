@@ -2,3 +2,4 @@
 .vscode
 model.libjob
 best_model.libjob
+__pycache__
