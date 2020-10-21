@@ -102,13 +102,38 @@ layout = html.Div([
      Input('monthly-debts', 'value')])
 def predict(annual_income, credit_score, loan_amount, loan_purpose, monthly_debts):
 
-    df = pd.DataFrame(
-        columns=['Annual Income', 'Credit Score', 'Loan Amount', 'Loan Purpose', 'Monthly Debts'], 
-        data=[[annual_income, credit_score, loan_amount, loan_purpose, monthly_debts]]
-    )
+    # genres = [genre1, genre2, genre3]
 
-    pipeline = load('model/pipeline.joblib')
+    # data = {
+    #     'Year': year,
+    #     'Certification': certification, 
+    #     'Rating': rating, 
+    #     'Metascore': metascore, 
+    #     'Votes': votes,
+    #     'USA Box Office': us_box_office, 
+    #     'Description': description,
+    #     'Genres': genres,
+    # }
+
+    data = {'0':{
+        'Title': None,
+        'Year': 0,
+        'Certification': 0, 
+        'Rating': 0, 
+        'Metascore': 0, 
+        'Votes': 0,
+        'USA Box Office': 0, 
+        'Description': 0,
+        'Genres': None,
+    }}
+
+    df = pd.DataFrame(
+       data
+    ).T
+    print(df)
+
+    pipeline = load('model/ridge.joblib')
     y_pred_log = pipeline.predict(df)
     y_pred = np.expm1(y_pred_log)[0]
 
-    return f'Interest rate for 36 month loan: {y_pred:.2f}%'
+    return f'Predicted Runtime: {y_pred:.2f}%'
