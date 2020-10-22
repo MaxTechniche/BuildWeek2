@@ -29,6 +29,8 @@ numpy = "*"
 pandas = "*"
 sklearn = "*"
 category-encoders = "*"
+ipykernel = "*"
+matplotlib = "*"
 
 [requires]
 python_version = "3.8"

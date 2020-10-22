@@ -10,11 +10,27 @@ import pandas as pd
 
 from app import app
 
-genres = ['Mystery', 'War', 'Sci-Fi', 'Animation', 'Western',
-    'Biography', 'Action', 'Thriller', 'Comedy', 'Music', 'Romance',
-    'Musical', 'Family', 'Crime', 'Sport', 'Adventure', 'Film-Noir',
-    'Fantasy', 'Drama', 'Horror', 'History'
-]
+genres = ['Action',
+ 'Adventure',
+ 'Animation',
+ 'Biography',
+ 'Comedy',
+ 'Crime',
+ 'Drama',
+ 'Family',
+ 'Fantasy',
+ 'Film-Noir',
+ 'History',
+ 'Horror',
+ 'Music',
+ 'Musical',
+ 'Mystery',
+ 'Romance',
+ 'Sci-Fi',
+ 'Sport',
+ 'Thriller',
+ 'War',
+ 'Western']
 
 certifications = ['R', 'PG-13', 'Approved', 'PG', 'Not Rated', 'G', 'Passed', 'TV-14', 'GP', 'TV-PG', 'TV-MA', 'Unrated', 'NC-17', 'M']
 
@@ -22,10 +38,11 @@ style = {'padding': '.5em', 'paddingLeft': '1.5em', 'margin': '.1em'}
 
 layout = html.Div([
     dcc.Markdown("""
-        ### Predict Movie Runtime
-    
+    &nbsp
+
+    Enter information about a movie. [IMDb](https://www.imdb.com/) is your best place for information.
     """),
-    html.Div(id='prediction-content', style={'marginBottom': '0em', **style, 'paddingLeft': '27em'}), 
+    html.Div(id='prediction-content', style={'marginBottom': '0em', **style, 'fontSize':20}), 
 
     html.Div([
         dcc.Markdown('###### Title'), 
@@ -51,7 +68,7 @@ layout = html.Div([
             id='certification', 
             options=[{'label': cert, 'value': cert} for cert in certifications]
         ), 
-    ], style={'width': '19%', **style}),
+    ], style=style),
 
     html.Div([
         dcc.Markdown('###### User Rating'),
@@ -85,7 +102,7 @@ layout = html.Div([
             max=1000000000, 
             step=100000, 
             # value=500000000, 
-            marks={n: str(n)[:-6]+'M' for n in range(0,1000000001,100000000)}
+            marks={n: str(n)[:-6]+'M' for n in range(0,1000000001,50000000)}
         )
     ], style=style),
 
@@ -94,10 +111,10 @@ layout = html.Div([
         dcc.Slider(
             id='votes', 
             min=0, 
-            max=3000000, 
-            step=100, 
+            max=1500000, 
+            step=1000, 
             #value=1500000, 
-            marks={n: str(n)[:-3]+'K' for n in range(0,3000001,500000)}
+            marks={n: str(n)[:-3]+'K' for n in range(0,1500001,100000)}
         )
     ], style=style),
 
@@ -108,7 +125,7 @@ layout = html.Div([
             options=[{'label': genre, 'value': genre} for genre in genres], 
             multi=True
         ), 
-    ], style={'width': '40%', **style}),
+    ], style=style),
 
     html.Div([
         dcc.Markdown('###### Movie Description'),
@@ -119,7 +136,7 @@ layout = html.Div([
     ], style=style),
 
 
-])
+], style={**style, 'textAlign': 'center'})
 
 @app.callback(
     Output('prediction-content', 'children'),
@@ -200,15 +217,11 @@ def predict(title, year, certification, rating, metascore, usa_box_office, votes
     df.fillna(value=np.NaN, inplace=True)
     df = wrangle(df)
 
-    df = df[['Year', 'Certification', 'Rating', 'Metascore', 'Votes',
-       'USA Box Office', 'Mystery', 'War', 'Sci-Fi', 'Animation', 'Western',
-       'Biography', 'Action', 'Thriller', 'Comedy', 'Music', 'Romance',
-       'Musical', 'Family', 'Crime', 'Sport', 'Adventure', 'Film-Noir',
-       'Fantasy', 'Drama', 'Horror', 'History', 'Description Length']]
+    df = df[['Year', 'Certification', 'Rating', 'Metascore', 'Votes', 'USA Box Office', 'Action', 'Adventure', 'Animation', 'Biography', 'Comedy', 'Crime', 'Drama', 'Family', 'Fantasy', 'Film-Noir', 'History', 'Horror', 'Music', 'Musical', 'Mystery', 'Romance', 'Sci-Fi', 'Sport', 'Thriller', 'War', 'Western', 'Description Length']]
 
 
     pipeline = load('model/ridge.joblib')
     y_pred = pipeline.predict(df)[0]
 
     # return f'Predicted Runtime: {y_pred_log:.2f}%'
-    return f'Predicted Runtime: {y_pred:.0f}'
+    return f'Predicted Runtime: {max(0, y_pred):.0f} minutes'
