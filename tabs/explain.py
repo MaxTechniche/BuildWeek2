@@ -17,6 +17,6 @@ layout = html.Div([
 
         I could look for more features/info about movies in order to predict runtime, which might help. Here are the feature coefficients of the current model.
         """),
-        html.Img(src=app.get_asset_url('ridge_importance.jpg'))
+        html.Img(src=app.get_asset_url('ridge_importance.jpg'), width=800)
     ])
 ])
