@@ -207,7 +207,6 @@ def predict(title, year, certification, rating, metascore, usa_box_office, votes
        'Musical', 'Family', 'Crime', 'Sport', 'Adventure', 'Film-Noir',
        'Fantasy', 'Drama', 'Horror', 'History', 'Description Length']]
 
-    print(df.to_dict())
 
     pipeline = load('model/ridge.joblib')
     y_pred = pipeline.predict(df)[0]
