@@ -7,7 +7,6 @@ import dash_html_components as html
 from joblib import load
 import numpy as np
 import pandas as pd
-from sklearn.utils.validation import column_or_1d
 
 from app import app
 
