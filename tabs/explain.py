@@ -16,7 +16,7 @@ layout = html.Div([
 
         I could look for more features/info about movies in order to predict runtime, which might help. Here are the feature importance values of the current model.
 
-        ![]()
+        ![](/images/ridge_importance.png)
 
 
         """)
