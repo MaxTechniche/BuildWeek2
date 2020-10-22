@@ -31,6 +31,7 @@ sklearn = "*"
 category-encoders = "*"
 ipykernel = "*"
 matplotlib = "*"
+dash-bootstrap-components = "*"
 
 [requires]
 python_version = "3.8"
