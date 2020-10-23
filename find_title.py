@@ -17,13 +17,19 @@ def get_title_info(title):
     all_info = {}
 
     # title_ = next(soup.find('h1', attrs={'class':''}).children)[:-1]
-    year = int(soup.find('span', attrs={'id':'titleYear'}).a.text)
+    try:
+        year = int(soup.find('span', attrs={'id':'titleYear'}).a.text)
+    except AttributeError:
+        year = None
     try:
         cert = next(soup.find('div', class_='subtext').children).strip()
     except AttributeError:
         cert = None
     # time = int(soup.find('h4', text='Runtime:').next_sibling.next_sibling.text[:-3])
-    rating = float(soup.find('span', attrs={'itemprop':'ratingValue'}).text)
+    try:
+        rating = float(soup.find('span', attrs={'itemprop':'ratingValue'}).text)
+    except AttributeError:
+        rating = None
     try:
         meta = int(soup.find('div', class_='metacriticScore score_mixed titleReviewBarSubItem').text)
     except AttributeError:
@@ -31,17 +37,27 @@ def get_title_info(title):
     try:
         hs = soup.find_all('h4', attrs={'class':'inline'})
         for h in hs:
-            if 'USA' in h.text:
+            if 'Gross USA' in h.text:
                 gross = int(h.next_sibling.replace(',', '').strip()[1:])
                 break
         else:
             gross = None
     except AttributeError:
         gross = None
-    votes = int(soup.find('span', attrs={'itemprop':'ratingCount'}).text.replace(',', ''))
-    genres = list(set(x.text.strip() for x in soup.find_all('a', href=re.compile('genres'))))
-    description = soup.find('div', attrs={'class':'inline canwrap'}).text.strip()
+    try:
+        votes = int(soup.find('span', attrs={'itemprop':'ratingCount'}).text.replace(',', ''))
+    except AttributeError:
+        votes = None
+    try:
+        genres = list(set(x.text.strip() for x in soup.find_all('a', href=re.compile('genres'))))
+    except AttributeError:
+        genres = None
+    try:
+        description = soup.find('div', attrs={'class':'inline canwrap'}).text.strip()
+    except AttributeError:
+        description = None
     
+    print(year, cert, rating, meta, gross, votes, genres, description)
     return year, cert, rating, meta, gross, votes, genres, description
 
 
