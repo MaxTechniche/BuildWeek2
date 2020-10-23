@@ -1,14 +1,16 @@
-from dash.dependencies import Input, Output
+from dash.dependencies import Input, Output, State
 import dash_core_components as dcc
 from dash_core_components.Markdown import Markdown
 from dash_core_components.Textarea import Textarea
 import dash_html_components as html
+from dash_html_components.Mark import Mark
 
 from joblib import load
 import numpy as np
 import pandas as pd
 
 from app import app
+from find_title import get_titles, get_title_info
 
 genres = ['Action',
  'Adventure',
@@ -36,6 +38,8 @@ certifications = ['R', 'PG-13', 'Approved', 'PG', 'Not Rated', 'G', 'Passed', 'T
 
 style = {'padding': '.5em', 'paddingLeft': '1.5em', 'margin': '.1em'}
 
+titles = {None: None}
+
 layout = html.Div([
     dcc.Markdown("""
     &nbsp
@@ -49,16 +53,26 @@ layout = html.Div([
         dcc.Input(
             id='title',
             type='text',
-            placeholder='Title...' 
+            value='',
+            debounce=True
         ),
+        html.Button('Search', id='search')
     ], style=style), 
+
+    html.Div([
+        dcc.Markdown('Top matching titles:'),
+        dcc.Markdown(children=f'{titles.items()}', 
+                     id='top-title'),
+        html.Button('Autofill Match', id='autofill'),
+        dcc.Markdown('Gathers data it can from IMDb.com. Might not get all info required.')
+    ], style=style),
 
     html.Div([
         dcc.Markdown('###### Year'), 
         dcc.Input(
             id='year',
             type='number',
-            placeholder='Year...' 
+            placeholder='Year...'
         ),
     ], style=style), 
 
@@ -134,6 +148,8 @@ layout = html.Div([
             style={'width': '100%'}
         )
     ], style=style),
+
+    html.Button('Predict', id='predict'),
 
 
 ], style={**style, 'textAlign': 'center'})
@@ -211,6 +227,9 @@ def predict(title, year, certification, rating, metascore, usa_box_office, votes
         'Description': description,
     }}
 
+    global titles
+    titles = get_titles(title)
+
     df = pd.DataFrame(
        data
     ).T
@@ -224,4 +243,38 @@ def predict(title, year, certification, rating, metascore, usa_box_office, votes
     y_pred = pipeline.predict(df)[0]
 
     # return f'Predicted Runtime: {y_pred_log:.2f}%'
-    return f'Predicted Runtime: {max(0, y_pred):.0f} minutes'
+    return f'Predicted Runtime: {max(0, y_pred):.2f} minutes'
+
+
+@app.callback(
+    Output('top-title', 'children'),
+    [Input('search', 'n_clicks')],
+    [State('title', 'value')],)
+def search(n_clicks, value):
+    x = 1
+    titles = get_titles(value)
+    if titles:
+        return '&nbsp  \n\n'.join(list(titles.keys())[:x])
+    return ''
+
+
+@app.callback([
+    Output('year', 'value'),
+    Output('certification', 'value'),
+    Output('rating', 'value'),
+    Output('metascore', 'value'),
+    Output('usa_box_office', 'value'),
+    Output('votes', 'value'),
+    Output('genres', 'value'),
+    Output('description', 'value')], # Title Input text
+    [Input('autofill', 'n_clicks')], # Button click
+    [State('title', 'value')],)
+def autofill(n_clicks, value):
+    print('button clicked')
+    title = get_titles(value, True)
+    if title:
+        title = list(title.values())[0]
+    else:
+        return [None] * 8
+    return get_title_info(title)
+
